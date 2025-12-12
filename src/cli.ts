@@ -56,7 +56,20 @@ DRIVE COMMANDS
       Move a file to a different folder.
 
   gdcli <email> rename <fileId> <newName>
-      Rename a file.
+      Rename a file or folder.
+
+  gdcli <email> share <fileId> [options]
+      Share a file or folder.
+      Options:
+        --anyone             Make publicly accessible
+        --email <addr>       Share with specific user
+        --role <r>           Permission: reader (default) or writer
+
+  gdcli <email> unshare <fileId> <permissionId>
+      Remove a permission from a file.
+
+  gdcli <email> permissions <fileId>
+      List permissions on a file.
 
   gdcli <email> url <fileIds...>
       Print web URLs for files.
@@ -75,6 +88,10 @@ EXAMPLES
   gdcli you@gmail.com delete 1ABC123
   gdcli you@gmail.com move 1ABC123 1DEF456
   gdcli you@gmail.com rename 1ABC123 "New Name.pdf"
+  gdcli you@gmail.com share 1ABC123 --anyone
+  gdcli you@gmail.com share 1ABC123 --email friend@gmail.com --role writer
+  gdcli you@gmail.com permissions 1ABC123
+  gdcli you@gmail.com unshare 1ABC123 anyoneWithLink
   gdcli you@gmail.com url 1ABC123 1DEF456
 
 DATA STORAGE
@@ -149,6 +166,15 @@ async function main() {
 				break;
 			case "rename":
 				await handleRename(account, commandArgs);
+				break;
+			case "share":
+				await handleShare(account, commandArgs);
+				break;
+			case "unshare":
+				await handleUnshare(account, commandArgs);
+				break;
+			case "permissions":
+				await handlePermissions(account, commandArgs);
 				break;
 			case "url":
 				handleUrl(commandArgs);
@@ -381,6 +407,56 @@ async function handleRename(account: string, args: string[]) {
 	const file = await service.rename(account, fileId, newName);
 	console.log(`Renamed: ${file.id}`);
 	console.log(`Name: ${file.name}`);
+}
+
+async function handleShare(account: string, args: string[]) {
+	const { values, positionals } = parseArgs({
+		args,
+		options: {
+			anyone: { type: "boolean" },
+			email: { type: "string" },
+			role: { type: "string" },
+		},
+		allowPositionals: true,
+	});
+
+	const fileId = positionals[0];
+	if (!fileId) error("Usage: <email> share <fileId> [--anyone | --email <addr>] [--role reader|writer]");
+	if (!values.anyone && !values.email) error("Must specify --anyone or --email <addr>");
+
+	const role = (values.role as "reader" | "writer") || "reader";
+	const result = await service.share(account, fileId, {
+		anyone: values.anyone,
+		email: values.email,
+		role,
+	});
+
+	console.log(`Shared: ${result.link}`);
+	console.log(`Permission ID: ${result.permissionId}`);
+}
+
+async function handleUnshare(account: string, args: string[]) {
+	const fileId = args[0];
+	const permissionId = args[1];
+	if (!fileId || !permissionId) error("Usage: <email> unshare <fileId> <permissionId>");
+
+	await service.unshare(account, fileId, permissionId);
+	console.log("Permission removed");
+}
+
+async function handlePermissions(account: string, args: string[]) {
+	const fileId = args[0];
+	if (!fileId) error("Usage: <email> permissions <fileId>");
+
+	const perms = await service.listPermissions(account, fileId);
+	if (perms.length === 0) {
+		console.log("No permissions");
+	} else {
+		console.log("ID\tTYPE\tROLE\tEMAIL");
+		for (const p of perms) {
+			console.log(`${p.id}\t${p.type}\t${p.role}\t${p.email || "-"}`);
+		}
+	}
 }
 
 function handleUrl(args: string[]) {

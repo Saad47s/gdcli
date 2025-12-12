@@ -158,10 +158,47 @@ gdcli <email> move <fileId> <newParentId>
 
 ### rename
 
-Rename a file.
+Rename a file or folder.
 
 ```bash
 gdcli <email> rename <fileId> <newName>
+```
+
+### share
+
+Share a file or folder.
+
+```bash
+gdcli <email> share <fileId> [options]
+```
+
+Options:
+- `--anyone` - Make publicly accessible (anyone with link)
+- `--email <addr>` - Share with specific user
+- `--role <r>` - Permission level: `reader` (default) or `writer`
+
+Examples:
+```bash
+gdcli you@gmail.com share 1ABC123 --anyone
+gdcli you@gmail.com share 1ABC123 --email friend@gmail.com --role writer
+```
+
+### unshare
+
+Remove a permission from a file.
+
+```bash
+gdcli <email> unshare <fileId> <permissionId>
+```
+
+Get permission IDs with `permissions` command.
+
+### permissions
+
+List permissions on a file.
+
+```bash
+gdcli <email> permissions <fileId>
 ```
 
 ### url

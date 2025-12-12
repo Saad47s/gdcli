@@ -309,6 +309,65 @@ export class DriveService {
 		return response.data;
 	}
 
+	async share(
+		email: string,
+		fileId: string,
+		options: { anyone?: boolean; email?: string; role?: "reader" | "writer" } = {},
+	): Promise<{ link: string; permissionId: string }> {
+		const drive = this.getDriveClient(email);
+
+		const role = options.role || "reader";
+
+		let permission: { type: string; role: string; emailAddress?: string };
+		if (options.anyone) {
+			permission = { type: "anyone", role };
+		} else if (options.email) {
+			permission = { type: "user", role, emailAddress: options.email };
+		} else {
+			throw new Error("Must specify --anyone or --email");
+		}
+
+		const response = await drive.permissions.create({
+			fileId,
+			requestBody: permission,
+			fields: "id",
+		});
+
+		// Get the shareable link
+		const file = await drive.files.get({
+			fileId,
+			fields: "webViewLink",
+		});
+
+		return {
+			link: file.data.webViewLink || `https://drive.google.com/file/d/${fileId}/view`,
+			permissionId: response.data.id || "",
+		};
+	}
+
+	async unshare(email: string, fileId: string, permissionId: string): Promise<void> {
+		const drive = this.getDriveClient(email);
+		await drive.permissions.delete({ fileId, permissionId });
+	}
+
+	async listPermissions(
+		email: string,
+		fileId: string,
+	): Promise<Array<{ id: string; type: string; role: string; email?: string }>> {
+		const drive = this.getDriveClient(email);
+		const response = await drive.permissions.list({
+			fileId,
+			fields: "permissions(id, type, role, emailAddress)",
+		});
+
+		return (response.data.permissions || []).map((p) => ({
+			id: p.id || "",
+			type: p.type || "",
+			role: p.role || "",
+			email: p.emailAddress || undefined,
+		}));
+	}
+
 	async search(email: string, query: string, maxResults = 20, pageToken?: string): Promise<FileListResult> {
 		const drive = this.getDriveClient(email);
 
